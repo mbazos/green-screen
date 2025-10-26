@@ -1,0 +1,14 @@
+This is a temporary file to build the full keyboard layout.
+
+Full keyboard layout (104 keys):
+- Function row: ESC, F1-F12
+- Number row: `, 1-0, -, =, BACKSPACE
+- QWERTY row: TAB, Q-P, [, ], \
+- ASDF row: CAPS, A-L, ;, ', ENTER
+- ZXCV row: SHIFT, Z-M, ,, ., /, SHIFT
+- Bottom row: CTRL, WIN, ALT, SPACE, ALT, WIN, MENU, CTRL
+- Nav cluster: INS, HOME, PGUP, DEL, END, PGDN
+- Arrow keys: UP, LEFT, DOWN, RIGHT
+- Numpad: NUMLOCK, /, *, -, 7-9, +, 4-6, 1-3, ENTER, 0, .
+
+Total: ~104 keys
