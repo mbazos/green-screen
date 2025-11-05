@@ -201,8 +201,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-8 text-center min-h-[2rem]">
-            <p className="text-lg md:text-xl">
+          <div className="mt-8 text-center min-h-[4rem] md:min-h-[4.5rem]">
+            <p className="text-lg md:text-xl leading-relaxed">
               {displayText}
             </p>
           </div>
