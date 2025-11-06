@@ -53,8 +53,8 @@ function HomeContent() {
   const [messageIndex, setMessageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    startDate: startDateParam,
-    endDate: endDateParam,
+    startDate: startDateParam.slice(0, 7), // Extract YYYY-MM
+    endDate: endDateParam.slice(0, 7), // Extract YYYY-MM
     messages: messages.join('\n'),
     footerText: footerTextParam,
     footerUrl: footerUrlParam,
@@ -65,8 +65,9 @@ function HomeContent() {
 
     // Build query parameters
     const params = new URLSearchParams();
-    params.set('startDate', formData.startDate);
-    params.set('endDate', formData.endDate);
+    // Append day (1st) and time (noon) to the month/year
+    params.set('startDate', `${formData.startDate}-01T12:00:00`);
+    params.set('endDate', `${formData.endDate}-01T12:00:00`);
 
     // Convert messages from newline-separated to JSON array
     const messagesArray = formData.messages.split('\n').filter(m => m.trim() !== '');
@@ -324,10 +325,10 @@ function HomeContent() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block mb-2 text-sm font-semibold">Start Date</label>
+                <label className="block mb-2 text-sm font-semibold">Start Date (Month & Year)</label>
                 <input
-                  type="datetime-local"
-                  value={formData.startDate.slice(0, 16)}
+                  type="month"
+                  value={formData.startDate}
                   onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
                   className="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
                   style={{ fontFamily: 'inherit', colorScheme: 'dark', caretColor: '#00dd00' }}
@@ -335,10 +336,10 @@ function HomeContent() {
               </div>
 
               <div>
-                <label className="block mb-2 text-sm font-semibold">End Date</label>
+                <label className="block mb-2 text-sm font-semibold">End Date (Month & Year)</label>
                 <input
-                  type="datetime-local"
-                  value={formData.endDate.slice(0, 16)}
+                  type="month"
+                  value={formData.endDate}
                   onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
                   className="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
                   style={{ fontFamily: 'inherit', colorScheme: 'dark', caretColor: '#00dd00' }}
