@@ -5,6 +5,7 @@ import FullKeyboard from './components/FullKeyboard';
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({
+    years: 0,
     days: 0,
     hours: 0,
     minutes: 0,
@@ -37,17 +38,18 @@ export default function Home() {
       const elapsed = now - startDate;
 
       if (distance < 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        setTimeLeft({ years: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
         setProgress(100);
         return;
       }
 
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const years = Math.floor(distance / (1000 * 60 * 60 * 24 * 365.25));
+      const days = Math.floor((distance % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24));
       const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      setTimeLeft({ days, hours, minutes, seconds });
+      setTimeLeft({ years, days, hours, minutes, seconds });
 
       const progressPercent = (elapsed / totalDuration) * 100;
       setProgress(Math.min(progressPercent, 100));
@@ -145,6 +147,17 @@ export default function Home() {
         </header>
 
         <div className="flex gap-2 sm:gap-4 md:gap-8 text-center items-start">
+          <div className="flex flex-col items-center">
+            <span className="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">
+              {timeLeft.years}
+            </span>
+            <span className="text-xs sm:text-sm md:text-base mt-1 md:mt-2">
+              years
+            </span>
+          </div>
+          <div className="flex items-center" style={{ height: '2.5rem' }}>
+            <span className="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
+          </div>
           <div className="flex flex-col items-center">
             <span className="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">
               {timeLeft.days}
