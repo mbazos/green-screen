@@ -132,89 +132,89 @@ export default function Home() {
         }}
       />
 
-      <main className="flex flex-col items-center justify-center gap-8 z-20">
-        <header className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-2">
+      <main className="flex flex-col items-center justify-center gap-6 md:gap-8 z-20 px-4">
+        <header className="text-center w-full">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2">
             Time To Retirment
           </h1>
 
           {/* Interactive keyboard */}
-          <div className="keyboard-typing-container mt-8 w-full max-w-4xl">
+          <div className="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
             <FullKeyboard />
           </div>
         </header>
 
-        <div className="flex gap-4 md:gap-8 text-center items-start">
+        <div className="flex gap-2 sm:gap-4 md:gap-8 text-center items-start">
           <div className="flex flex-col items-center">
-            <span className="text-5xl md:text-7xl font-bold tabular-nums">
+            <span className="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">
               {timeLeft.days}
             </span>
-            <span className="text-sm md:text-base mt-2">
+            <span className="text-xs sm:text-sm md:text-base mt-1 md:mt-2">
               days
             </span>
           </div>
-          <div className="flex items-center" style={{ height: '3.75rem' }}>
-            <span className="text-5xl md:text-7xl font-bold colon-pulse">:</span>
+          <div className="flex items-center" style={{ height: '2.5rem' }}>
+            <span className="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-5xl md:text-7xl font-bold tabular-nums">
+            <span className="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">
               {String(timeLeft.hours).padStart(2, '0')}
             </span>
-            <span className="text-sm md:text-base mt-2">
+            <span className="text-xs sm:text-sm md:text-base mt-1 md:mt-2">
               hours
             </span>
           </div>
-          <div className="flex items-center" style={{ height: '3.75rem' }}>
-            <span className="text-5xl md:text-7xl font-bold colon-pulse">:</span>
+          <div className="flex items-center" style={{ height: '2.5rem' }}>
+            <span className="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-5xl md:text-7xl font-bold tabular-nums">
+            <span className="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">
               {String(timeLeft.minutes).padStart(2, '0')}
             </span>
-            <span className="text-sm md:text-base mt-2">
+            <span className="text-xs sm:text-sm md:text-base mt-1 md:mt-2">
               minutes
             </span>
           </div>
-          <div className="flex items-center" style={{ height: '3.75rem' }}>
-            <span className="text-5xl md:text-7xl font-bold colon-pulse">:</span>
+          <div className="flex items-center" style={{ height: '2.5rem' }}>
+            <span className="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-5xl md:text-7xl font-bold tabular-nums">
+            <span className="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">
               {String(timeLeft.seconds).padStart(2, '0')}
             </span>
-            <span className="text-sm md:text-base mt-2">
+            <span className="text-xs sm:text-sm md:text-base mt-1 md:mt-2">
               seconds
             </span>
           </div>
         </div>
 
-        <div className="w-full max-w-2xl">
-          <div className="relative w-full h-12 border-2 border-current">
+        <div className="w-full max-w-2xl px-2">
+          <div className="relative w-full h-10 sm:h-12 border-2 border-current">
             <div
               className="absolute top-0 left-0 h-full bg-current opacity-20 transition-all duration-1000"
               style={{ width: `${progress}%` }}
             />
-            <div className="absolute inset-0 flex items-center px-4">
-              <span className="text-xl md:text-2xl font-semibold">
+            <div className="absolute inset-0 flex items-center px-2 sm:px-4">
+              <span className="text-base sm:text-xl md:text-2xl font-semibold">
                 {progress.toFixed(1)}% complete
               </span>
             </div>
           </div>
 
-          <div className="mt-8 text-center min-h-[4rem] md:min-h-[4.5rem]">
-            <p className="text-lg md:text-xl leading-relaxed">
+          <div className="mt-6 sm:mt-8 text-center min-h-[3.5rem] sm:min-h-[4rem] md:min-h-[4.5rem] px-2">
+            <p className="text-base sm:text-lg md:text-xl leading-relaxed">
               {displayText}
             </p>
           </div>
         </div>
       </main>
 
-      <footer className="fixed bottom-4 left-0 right-0 text-center z-20">
+      <footer className="fixed bottom-2 sm:bottom-4 left-0 right-0 text-center z-20 px-4">
         <a
           href="https://michaelbazos.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-lg md:text-xl hover:opacity-70 transition-opacity"
+          className="text-base sm:text-lg md:text-xl hover:opacity-70 transition-opacity"
         >
           Michael Bazos
         </a>
