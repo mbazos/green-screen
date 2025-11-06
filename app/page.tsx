@@ -49,6 +49,33 @@ function HomeContent() {
   const [progress, setProgress] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [messageIndex, setMessageIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    startDate: startDateParam,
+    endDate: endDateParam,
+    messages: messages.join('\n'),
+    footerText: footerTextParam,
+    footerUrl: footerUrlParam,
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Build query parameters
+    const params = new URLSearchParams();
+    params.set('startDate', formData.startDate);
+    params.set('endDate', formData.endDate);
+
+    // Convert messages from newline-separated to JSON array
+    const messagesArray = formData.messages.split('\n').filter(m => m.trim() !== '');
+    params.set('messages', encodeURIComponent(JSON.stringify(messagesArray)));
+
+    params.set('footerText', formData.footerText);
+    params.set('footerUrl', formData.footerUrl);
+
+    // Reload with new params
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
+  };
 
   useEffect(() => {
     const targetDate = new Date(endDateParam).getTime();
@@ -127,6 +154,15 @@ function HomeContent() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden" style={{ backgroundColor: '#0c1a0e', color: '#00dd00', fontFamily: 'ui-monospace, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Mono", "Source Code Pro", "Fira Mono", "Droid Sans Mono", Consolas, "Courier New", monospace', WebkitFontSmoothing: 'antialiased' }}>
+      {/* Customize button */}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="fixed top-4 right-4 z-30 px-4 py-2 border-2 border-current hover:bg-current hover:text-[#0c1a0e] transition-all"
+        style={{ fontFamily: 'inherit' }}
+      >
+        Customize
+      </button>
+
       {/* Scanlines effect */}
       <div
         className="scanlines"
@@ -255,6 +291,106 @@ function HomeContent() {
           {footerTextParam}
         </a>
       </footer>
+
+      {/* Customization Modal */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="border-2 border-current p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            style={{ backgroundColor: '#0c1a0e' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Customize Countdown</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-2xl hover:opacity-70"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Start Date</label>
+                <input
+                  type="datetime-local"
+                  value={formData.startDate.slice(0, 16)}
+                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
+                  style={{ fontFamily: 'inherit', colorScheme: 'dark' }}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-semibold">End Date</label>
+                <input
+                  type="datetime-local"
+                  value={formData.endDate.slice(0, 16)}
+                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
+                  style={{ fontFamily: 'inherit', colorScheme: 'dark' }}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Messages (one per line)</label>
+                <textarea
+                  value={formData.messages}
+                  onChange={(e) => setFormData({ ...formData, messages: e.target.value })}
+                  rows={8}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e] resize-y"
+                  style={{ fontFamily: 'inherit' }}
+                  placeholder="Enter messages, one per line"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Footer Text</label>
+                <input
+                  type="text"
+                  value={formData.footerText}
+                  onChange={(e) => setFormData({ ...formData, footerText: e.target.value })}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
+                  style={{ fontFamily: 'inherit' }}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Footer URL</label>
+                <input
+                  type="url"
+                  value={formData.footerUrl}
+                  onChange={(e) => setFormData({ ...formData, footerUrl: e.target.value })}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
+                  style={{ fontFamily: 'inherit' }}
+                  placeholder="https://example.com"
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-3 border-2 border-current hover:bg-current hover:text-[#0c1a0e] transition-all font-semibold"
+                >
+                  Apply Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-3 border-2 border-current hover:bg-current hover:text-[#0c1a0e] transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
