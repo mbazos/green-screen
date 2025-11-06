@@ -139,11 +139,6 @@ export default function Home() {
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2">
             Time To Retirment
           </h1>
-
-          {/* Interactive keyboard */}
-          <div className="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
-            <FullKeyboard />
-          </div>
         </header>
 
         <div className="flex gap-2 sm:gap-4 md:gap-8 text-center items-start">
@@ -212,6 +207,11 @@ export default function Home() {
                 {progress.toFixed(1)}% complete
               </span>
             </div>
+          </div>
+
+          {/* Interactive keyboard */}
+          <div className="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
+            <FullKeyboard />
           </div>
 
           <div className="mt-6 sm:mt-8 text-center min-h-[3.5rem] sm:min-h-[4rem] md:min-h-[4.5rem] px-2">
