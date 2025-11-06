@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import FullKeyboard from './components/FullKeyboard';
 
@@ -27,17 +27,19 @@ function HomeContent() {
   const footerUrlParam = searchParams.get('footerUrl') || 'https://michaelbazos.com/';
 
   // Parse messages from JSON or use defaults
-  let messages = defaultMessages;
-  if (messagesParam) {
-    try {
-      const parsed = JSON.parse(decodeURIComponent(messagesParam));
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        messages = parsed;
+  const messages = useMemo(() => {
+    if (messagesParam) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(messagesParam));
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error('Failed to parse messages parameter:', e);
       }
-    } catch (e) {
-      console.error('Failed to parse messages parameter:', e);
     }
-  }
+    return defaultMessages;
+  }, [messagesParam]);
 
   const [timeLeft, setTimeLeft] = useState({
     years: 0,
@@ -113,6 +115,12 @@ function HomeContent() {
 
   useEffect(() => {
     const currentMessage = messages[messageIndex];
+
+    // Safety check
+    if (!currentMessage) {
+      return;
+    }
+
     let charIndex = 0;
     let isTyping = true;
     let timeoutId: NodeJS.Timeout;
