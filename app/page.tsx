@@ -1,9 +1,44 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import FullKeyboard from './components/FullKeyboard';
 
-export default function Home() {
+function HomeContent() {
+  const searchParams = useSearchParams();
+
+  // Default values
+  const defaultMessages = [
+    'Application Developer Single Sign On (SSO) - 2 years',
+    'Senior Application Developer EAS - 3 years and 1 month',
+    'Senior Application Developer SE&I - 2 years and 2 months',
+    'Senior Software Engineer Rental Car Services - 2 years and 11 months',
+    'Principal Engineer Rental Car Services - 2 years',
+    'Distinguished Engineer Rental Car Services - 6 years',
+    'Senior Director Rental Car Services - 1 year and 7 months',
+    'Mobility Search & Book Development Manager - Present',
+  ];
+
+  // Parse query parameters
+  const startDateParam = searchParams.get('startDate') || '2006-06-01T12:00:00';
+  const endDateParam = searchParams.get('endDate') || '2046-06-01T12:00:00';
+  const messagesParam = searchParams.get('messages');
+  const footerTextParam = searchParams.get('footerText') || 'Michael Bazos';
+  const footerUrlParam = searchParams.get('footerUrl') || 'https://michaelbazos.com/';
+
+  // Parse messages from JSON or use defaults
+  let messages = defaultMessages;
+  if (messagesParam) {
+    try {
+      const parsed = JSON.parse(decodeURIComponent(messagesParam));
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        messages = parsed;
+      }
+    } catch (e) {
+      console.error('Failed to parse messages parameter:', e);
+    }
+  }
+
   const [timeLeft, setTimeLeft] = useState({
     years: 0,
     days: 0,
@@ -15,21 +50,9 @@ export default function Home() {
   const [displayText, setDisplayText] = useState('');
   const [messageIndex, setMessageIndex] = useState(0);
 
-  const messages = [
-    'Application Developer Single Sign On (SSO) - 2 years',
-    'Senior Application Developer EAS - 3 years and 1 month',
-    'Senior Application Developer SE&I - 2 years and 2 months',
-    'Senior Software Engineer Rental Car Services - 2 years and 11 months',
-    'Principal Engineer Rental Car Services - 2 years',
-    'Distinguished Engineer Rental Car Services - 6 years',
-    'Senior Director Rental Car Services - 1 year and 7 months',
-    'Mobility Search & Book Development Manager - Present',
-  ];
-
   useEffect(() => {
-    // Set your target date here (example: January 20, 2029)
-    const targetDate = new Date('2046-06-01T12:00:00').getTime();
-    const startDate = new Date('2006-06-01T12:00:00').getTime();
+    const targetDate = new Date(endDateParam).getTime();
+    const startDate = new Date(startDateParam).getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -59,7 +82,7 @@ export default function Home() {
     const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [startDateParam, endDateParam]);
 
   useEffect(() => {
     const currentMessage = messages[messageIndex];
@@ -100,7 +123,7 @@ export default function Home() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [messageIndex]);
+  }, [messageIndex, messages]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden" style={{ backgroundColor: '#0c1a0e', color: '#00dd00', fontFamily: 'ui-monospace, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Mono", "Source Code Pro", "Fira Mono", "Droid Sans Mono", Consolas, "Courier New", monospace', WebkitFontSmoothing: 'antialiased' }}>
@@ -224,14 +247,22 @@ export default function Home() {
 
       <footer className="fixed bottom-2 sm:bottom-4 left-0 right-0 text-center z-20 px-4">
         <a
-          href="https://michaelbazos.com/"
+          href={footerUrlParam}
           target="_blank"
           rel="noopener noreferrer"
           className="text-base sm:text-lg md:text-xl hover:opacity-70 transition-opacity"
         >
-          Michael Bazos
+          {footerTextParam}
         </a>
       </footer>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
