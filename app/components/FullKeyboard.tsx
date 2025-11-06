@@ -43,7 +43,11 @@ const keyMap: { [key: string]: number } = {
   'Numpad0': 103, 'NumpadDecimal': 104,
 };
 
-export default function FullKeyboard() {
+interface FullKeyboardProps {
+  isComplete?: boolean;
+}
+
+export default function FullKeyboard({ isComplete = false }: FullKeyboardProps) {
   const [pressedKey, setPressedKey] = useState<number | null>(null);
   const [animatedKeys, setAnimatedKeys] = useState<number[]>([]);
 
@@ -74,6 +78,12 @@ export default function FullKeyboard() {
 
   // Random key press animation - randomly press 1-3 keys at a time
   useEffect(() => {
+    // Stop animations if complete
+    if (isComplete) {
+      setAnimatedKeys([]);
+      return;
+    }
+
     const pressRandomKeys = () => {
       // Randomly choose how many keys to press (1-3)
       const numKeys = Math.floor(Math.random() * 3) + 1;
@@ -93,7 +103,7 @@ export default function FullKeyboard() {
     const interval = setInterval(pressRandomKeys, 500);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isComplete]);
   return (
     <svg width="100%" height="100%" viewBox="0 0 625 162" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
       {/* Keyboard base */}

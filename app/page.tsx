@@ -52,6 +52,7 @@ function HomeContent() {
   const [displayText, setDisplayText] = useState('');
   const [messageIndex, setMessageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
   const [formData, setFormData] = useState({
     startDate: startDateParam.slice(0, 7), // Extract YYYY-MM
     endDate: endDateParam.slice(0, 7), // Extract YYYY-MM
@@ -93,6 +94,7 @@ function HomeContent() {
       if (distance < 0) {
         setTimeLeft({ years: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
         setProgress(100);
+        setIsComplete(true);
         return;
       }
 
@@ -115,6 +117,12 @@ function HomeContent() {
   }, [startDateParam, endDateParam]);
 
   useEffect(() => {
+    // If complete, show congratulations message
+    if (isComplete) {
+      setDisplayText('Congratulations you did it!');
+      return;
+    }
+
     const currentMessage = messages[messageIndex];
 
     // Safety check
@@ -159,10 +167,27 @@ function HomeContent() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [messageIndex, messages]);
+  }, [messageIndex, messages, isComplete]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden" style={{ backgroundColor: '#0c1a0e', color: '#00dd00', fontFamily: 'ui-monospace, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Mono", "Source Code Pro", "Fira Mono", "Droid Sans Mono", Consolas, "Courier New", monospace', WebkitFontSmoothing: 'antialiased' }}>
+      {/* Retro Fireworks */}
+      {isComplete && (
+        <div className="fixed inset-0 pointer-events-none z-10">
+          {[...Array(15)].map((_, i) => (
+            <div
+              key={i}
+              className="firework"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${2 + Math.random() * 2}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Customize button */}
       <button
         onClick={() => setIsModalOpen(true)}
@@ -279,7 +304,7 @@ function HomeContent() {
 
           {/* Interactive keyboard */}
           <div className="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
-            <FullKeyboard />
+            <FullKeyboard isComplete={isComplete} />
           </div>
 
           <div className="mt-6 sm:mt-8 text-center h-[3.5rem] sm:h-[4rem] md:h-[4.5rem] px-2 flex items-center justify-center overflow-hidden">
