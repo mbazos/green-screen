@@ -1,9 +1,44 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import FullKeyboard from './components/FullKeyboard';
 
-export default function Home() {
+function HomeContent() {
+  const searchParams = useSearchParams();
+
+  // Default values
+  const defaultMessages = [
+    'Application Developer Single Sign On (SSO) - 2 years',
+    'Senior Application Developer EAS - 3 years and 1 month',
+    'Senior Application Developer SE&I - 2 years and 2 months',
+    'Senior Software Engineer Rental Car Services - 2 years and 11 months',
+    'Principal Engineer Rental Car Services - 2 years',
+    'Distinguished Engineer Rental Car Services - 6 years',
+    'Senior Director Rental Car Services - 1 year and 7 months',
+    'Mobility Search & Book Development Manager - Present',
+  ];
+
+  // Parse query parameters
+  const startDateParam = searchParams.get('startDate') || '2006-06-01T12:00:00';
+  const endDateParam = searchParams.get('endDate') || '2046-06-01T12:00:00';
+  const messagesParam = searchParams.get('messages');
+  const footerTextParam = searchParams.get('footerText') || 'Michael Bazos';
+  const footerUrlParam = searchParams.get('footerUrl') || 'https://michaelbazos.com/';
+
+  // Parse messages from JSON or use defaults
+  let messages = defaultMessages;
+  if (messagesParam) {
+    try {
+      const parsed = JSON.parse(decodeURIComponent(messagesParam));
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        messages = parsed;
+      }
+    } catch (e) {
+      console.error('Failed to parse messages parameter:', e);
+    }
+  }
+
   const [timeLeft, setTimeLeft] = useState({
     years: 0,
     days: 0,
@@ -14,22 +49,37 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [messageIndex, setMessageIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    startDate: startDateParam,
+    endDate: endDateParam,
+    messages: messages.join('\n'),
+    footerText: footerTextParam,
+    footerUrl: footerUrlParam,
+  });
 
-  const messages = [
-    'Application Developer Single Sign On (SSO) - January 2006 - January 2008',
-    'Senior Application Developer EAS - January 2008 - February 2011',
-    'Senior Application Developer SE&I - February 2011 - April 2013',
-    'Senior Software Engineer Rental Car Services - April 2013 - March 2016',
-    'Principal Engineer Rental Car Services - March 2016 - March 2018',
-    'Distinguished Engineer Rental Car Services - March 2018 - March 2024',
-    'Senior Director Rental Car Services - March 2024 - October 2025',
-    'Mobility Search & Book Development Manager - October 2025 - Present',
-  ];
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Build query parameters
+    const params = new URLSearchParams();
+    params.set('startDate', formData.startDate);
+    params.set('endDate', formData.endDate);
+
+    // Convert messages from newline-separated to JSON array
+    const messagesArray = formData.messages.split('\n').filter(m => m.trim() !== '');
+    params.set('messages', encodeURIComponent(JSON.stringify(messagesArray)));
+
+    params.set('footerText', formData.footerText);
+    params.set('footerUrl', formData.footerUrl);
+
+    // Reload with new params
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
+  };
 
   useEffect(() => {
-    // Set your target date here (example: January 20, 2029)
-    const targetDate = new Date('2046-06-01T12:00:00').getTime();
-    const startDate = new Date('2006-06-01T12:00:00').getTime();
+    const targetDate = new Date(endDateParam).getTime();
+    const startDate = new Date(startDateParam).getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -59,7 +109,7 @@ export default function Home() {
     const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [startDateParam, endDateParam]);
 
   useEffect(() => {
     const currentMessage = messages[messageIndex];
@@ -100,10 +150,19 @@ export default function Home() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [messageIndex]);
+  }, [messageIndex, messages]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden" style={{ backgroundColor: '#0c1a0e', color: '#00dd00', fontFamily: 'ui-monospace, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Mono", "Source Code Pro", "Fira Mono", "Droid Sans Mono", Consolas, "Courier New", monospace', WebkitFontSmoothing: 'antialiased' }}>
+      {/* Customize button */}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="fixed top-4 right-4 z-30 px-4 py-2 border-2 border-current hover:bg-current hover:text-[#0c1a0e] transition-all"
+        style={{ fontFamily: 'inherit' }}
+      >
+        Customize
+      </button>
+
       {/* Scanlines effect */}
       <div
         className="scanlines"
@@ -139,11 +198,6 @@ export default function Home() {
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2">
             Time To Retirment
           </h1>
-
-          {/* Interactive keyboard */}
-          <div className="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
-            <FullKeyboard />
-          </div>
         </header>
 
         <div className="flex gap-2 sm:gap-4 md:gap-8 text-center items-start">
@@ -214,6 +268,11 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Interactive keyboard */}
+          <div className="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
+            <FullKeyboard />
+          </div>
+
           <div className="mt-6 sm:mt-8 text-center min-h-[3.5rem] sm:min-h-[4rem] md:min-h-[4.5rem] px-2">
             <p className="text-base sm:text-lg md:text-xl leading-relaxed">
               {displayText}
@@ -224,14 +283,122 @@ export default function Home() {
 
       <footer className="fixed bottom-2 sm:bottom-4 left-0 right-0 text-center z-20 px-4">
         <a
-          href="https://michaelbazos.com/"
+          href={footerUrlParam}
           target="_blank"
           rel="noopener noreferrer"
           className="text-base sm:text-lg md:text-xl hover:opacity-70 transition-opacity"
         >
-          Michael Bazos
+          {footerTextParam}
         </a>
       </footer>
+
+      {/* Customization Modal */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="border-2 border-current p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            style={{ backgroundColor: '#0c1a0e' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Customize Countdown</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-2xl hover:opacity-70"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Start Date</label>
+                <input
+                  type="datetime-local"
+                  value={formData.startDate.slice(0, 16)}
+                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
+                  style={{ fontFamily: 'inherit', colorScheme: 'dark' }}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-semibold">End Date</label>
+                <input
+                  type="datetime-local"
+                  value={formData.endDate.slice(0, 16)}
+                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
+                  style={{ fontFamily: 'inherit', colorScheme: 'dark' }}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Messages (one per line)</label>
+                <textarea
+                  value={formData.messages}
+                  onChange={(e) => setFormData({ ...formData, messages: e.target.value })}
+                  rows={8}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e] resize-y"
+                  style={{ fontFamily: 'inherit' }}
+                  placeholder="Enter messages, one per line"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Footer Text</label>
+                <input
+                  type="text"
+                  value={formData.footerText}
+                  onChange={(e) => setFormData({ ...formData, footerText: e.target.value })}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
+                  style={{ fontFamily: 'inherit' }}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Footer URL</label>
+                <input
+                  type="url"
+                  value={formData.footerUrl}
+                  onChange={(e) => setFormData({ ...formData, footerUrl: e.target.value })}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
+                  style={{ fontFamily: 'inherit' }}
+                  placeholder="https://example.com"
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-3 border-2 border-current hover:bg-current hover:text-[#0c1a0e] transition-all font-semibold"
+                >
+                  Apply Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-3 border-2 border-current hover:bg-current hover:text-[#0c1a0e] transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
