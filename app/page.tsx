@@ -16,14 +16,14 @@ export default function Home() {
   const [messageIndex, setMessageIndex] = useState(0);
 
   const messages = [
-    'Application Developer Single Sign On (SSO) - January 2006 - January 2008',
-    'Senior Application Developer EAS - January 2008 - February 2011',
-    'Senior Application Developer SE&I - February 2011 - April 2013',
-    'Senior Software Engineer Rental Car Services - April 2013 - March 2016',
-    'Principal Engineer Rental Car Services - March 2016 - March 2018',
-    'Distinguished Engineer Rental Car Services - March 2018 - March 2024',
-    'Senior Director Rental Car Services - March 2024 - October 2025',
-    'Mobility Search & Book Development Manager - October 2025 - Present',
+    'Application Developer Single Sign On (SSO) - 2 years',
+    'Senior Application Developer EAS - 3 years and 1 month',
+    'Senior Application Developer SE&I - 2 years and 2 months',
+    'Senior Software Engineer Rental Car Services - 2 years and 11 months',
+    'Principal Engineer Rental Car Services - 2 years',
+    'Distinguished Engineer Rental Car Services - 6 years',
+    'Senior Director Rental Car Services - 1 year and 7 months',
+    'Mobility Search & Book Development Manager - Present',
   ];
 
   useEffect(() => {
