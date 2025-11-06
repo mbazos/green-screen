@@ -329,8 +329,8 @@ function HomeContent() {
                   type="datetime-local"
                   value={formData.startDate.slice(0, 16)}
                   onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
-                  style={{ fontFamily: 'inherit', colorScheme: 'dark' }}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
+                  style={{ fontFamily: 'inherit', colorScheme: 'dark', caretColor: '#00dd00' }}
                 />
               </div>
 
@@ -340,8 +340,8 @@ function HomeContent() {
                   type="datetime-local"
                   value={formData.endDate.slice(0, 16)}
                   onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
-                  style={{ fontFamily: 'inherit', colorScheme: 'dark' }}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
+                  style={{ fontFamily: 'inherit', colorScheme: 'dark', caretColor: '#00dd00' }}
                 />
               </div>
 
@@ -351,8 +351,8 @@ function HomeContent() {
                   value={formData.messages}
                   onChange={(e) => setFormData({ ...formData, messages: e.target.value })}
                   rows={8}
-                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e] resize-y"
-                  style={{ fontFamily: 'inherit' }}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none resize-y"
+                  style={{ fontFamily: 'inherit', caretColor: '#00dd00' }}
                   placeholder="Enter messages, one per line"
                 />
               </div>
@@ -363,8 +363,8 @@ function HomeContent() {
                   type="text"
                   value={formData.footerText}
                   onChange={(e) => setFormData({ ...formData, footerText: e.target.value })}
-                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
-                  style={{ fontFamily: 'inherit' }}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
+                  style={{ fontFamily: 'inherit', caretColor: '#00dd00' }}
                 />
               </div>
 
@@ -374,8 +374,8 @@ function HomeContent() {
                   type="url"
                   value={formData.footerUrl}
                   onChange={(e) => setFormData({ ...formData, footerUrl: e.target.value })}
-                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none focus:bg-current focus:text-[#0c1a0e]"
-                  style={{ fontFamily: 'inherit' }}
+                  className="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
+                  style={{ fontFamily: 'inherit', caretColor: '#00dd00' }}
                   placeholder="https://example.com"
                 />
               </div>
