@@ -230,7 +230,7 @@ function HomeContent() {
       <main className="flex flex-col items-center justify-center gap-6 md:gap-8 z-20 px-4">
         <header className="text-center w-full">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2">
-            Time To Retirment
+            Green Screen To Retirement
           </h1>
         </header>
 
