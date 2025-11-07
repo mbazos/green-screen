@@ -28,10 +28,11 @@ function HomeContent() {
 
   // Parse messages from JSON or use defaults
   const messages = useMemo(() => {
-    if (messagesParam) {
+    if (messagesParam !== null) {
       try {
         const parsed = JSON.parse(decodeURIComponent(messagesParam));
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
+          // Allow empty arrays when explicitly provided
           return parsed;
         }
       } catch (e) {
@@ -120,6 +121,12 @@ function HomeContent() {
     // If complete, show congratulations message
     if (isComplete) {
       setDisplayText('Congratulations you did it!');
+      return;
+    }
+
+    // If messages array is empty, clear display text
+    if (messages.length === 0) {
+      setDisplayText('');
       return;
     }
 
