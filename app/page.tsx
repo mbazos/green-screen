@@ -147,7 +147,7 @@ function HomeContent() {
         if (charIndex <= currentMessage.length) {
           setDisplayText(currentMessage.slice(0, charIndex));
           charIndex++;
-          timeoutId = setTimeout(typeWriter, 50); // 50ms per character (2x faster)
+          timeoutId = setTimeout(typeWriter, 150); // 150ms per character
         } else {
           // Wait 3 seconds before reversing
           timeoutId = setTimeout(() => {
@@ -161,7 +161,7 @@ function HomeContent() {
         if (charIndex >= 0) {
           setDisplayText(currentMessage.slice(0, charIndex));
           charIndex--;
-          timeoutId = setTimeout(typeWriter, 25); // 25ms when erasing (2x faster)
+          timeoutId = setTimeout(typeWriter, 75); // 75ms when erasing
         } else {
           // Move to next message
           setMessageIndex((prev) => (prev + 1) % messages.length);

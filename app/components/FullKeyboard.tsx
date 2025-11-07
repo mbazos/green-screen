@@ -129,10 +129,10 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
 
         setAnimatedKeys(keysToPress);
 
-        // Release keys after 50ms (matching typing speed) to prevent last key from staying pressed
+        // Release keys after 150ms (matching typing speed) to prevent last key from staying pressed
         const releaseTimeout = setTimeout(() => {
           setAnimatedKeys([]);
-        }, 50);
+        }, 150);
 
         return () => clearTimeout(releaseTimeout);
       } else {
@@ -140,15 +140,8 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
         setAnimatedKeys([]);
       }
     } else if (currentLength < prevTextLength) {
-      // Text is being erased - press backspace
-      setAnimatedKeys([30]); // Backspace key
-
-      // Release backspace after 25ms (matching erase speed)
-      const releaseTimeout = setTimeout(() => {
-        setAnimatedKeys([]);
-      }, 25);
-
-      return () => clearTimeout(releaseTimeout);
+      // Text is being erased - keep backspace pressed
+      setAnimatedKeys([30]); // Backspace key stays pressed while erasing
     } else if (currentLength === 0) {
       // Text is empty, clear keys
       setAnimatedKeys([]);
