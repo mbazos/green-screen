@@ -113,6 +113,8 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
     const currentLength = displayText.length;
     const prevLength = prevTextLengthRef.current;
 
+    console.log('FullKeyboard effect:', { currentLength, prevLength, displayText: displayText.substring(0, 20) });
+
     // Determine if text is being added or removed
     if (currentLength > prevLength) {
       // Text is being typed forward - press the key for the new character
@@ -141,13 +143,15 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
         setAnimatedKeys([]);
       }
     } else if (currentLength < prevLength) {
-      // Text is being erased - press backspace and release after delay
+      // Text is being erased - press backspace key for duration of erase
+      console.log('ERASING: Setting backspace key (30)');
       setAnimatedKeys([30]); // Backspace key ID
 
-      // Release backspace after 50ms to create visible tapping effect before next deletion at 75ms
+      // Release backspace after 65ms (just before next deletion at 75ms) for visible tap
       const releaseTimeout = setTimeout(() => {
+        console.log('ERASING: Releasing backspace key');
         setAnimatedKeys([]);
-      }, 50);
+      }, 65);
 
       return () => clearTimeout(releaseTimeout);
     } else if (currentLength === 0 && prevLength > 0) {
