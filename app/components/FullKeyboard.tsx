@@ -113,10 +113,16 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
     const currentLength = displayText.length;
     const prevLength = prevTextLengthRef.current;
 
-    console.log('FullKeyboard effect:', { currentLength, prevLength, displayText: displayText.substring(0, 20) });
+    console.log('FullKeyboard effect:', {
+      currentLength,
+      prevLength,
+      displayText: displayText.substring(0, 20),
+      comparison: currentLength > prevLength ? 'TYPING' : currentLength < prevLength ? 'ERASING' : 'SAME'
+    });
 
     // Determine if text is being added or removed
     if (currentLength > prevLength) {
+      console.log('→ TYPING branch: character key for', displayText[currentLength - 1]);
       // Text is being typed forward - press the key for the new character
       const newChar = displayText[currentLength - 1];
       const lowerChar = newChar.toLowerCase();
@@ -144,22 +150,27 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
       }
     } else if (currentLength < prevLength) {
       // Text is being erased - press backspace key for duration of erase
-      console.log('ERASING: Setting backspace key (30)');
+      console.log('→ ERASING branch: Setting backspace key (30)');
       setAnimatedKeys([30]); // Backspace key ID
 
       // Release backspace after 65ms (just before next deletion at 75ms) for visible tap
       const releaseTimeout = setTimeout(() => {
-        console.log('ERASING: Releasing backspace key');
+        console.log('  ERASING: Releasing backspace key');
         setAnimatedKeys([]);
       }, 65);
 
       return () => clearTimeout(releaseTimeout);
     } else if (currentLength === 0 && prevLength > 0) {
       // Text is empty, clear keys
+      console.log('→ EMPTY branch: clearing keys');
       setAnimatedKeys([]);
+    } else {
+      // Same length - do nothing
+      console.log('→ SAME branch: no change');
     }
 
     // Update ref to current length
+    console.log('  Updating prevTextLengthRef from', prevLength, 'to', currentLength);
     prevTextLengthRef.current = currentLength;
   }, [displayText, isComplete]);
   return (
