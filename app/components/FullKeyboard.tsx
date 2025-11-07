@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 // Map keyboard event codes to key IDs
 const keyMap: { [key: string]: number } = {
@@ -43,13 +43,38 @@ const keyMap: { [key: string]: number } = {
   'Numpad0': 103, 'NumpadDecimal': 104,
 };
 
+// Map characters to key IDs
+const charToKeyMap: { [key: string]: number } = {
+  // Letters
+  'a': 60, 'b': 80, 'c': 78, 'd': 62, 'e': 41, 'f': 63, 'g': 64, 'h': 65,
+  'i': 46, 'j': 66, 'k': 67, 'l': 68, 'm': 82, 'n': 81, 'o': 47, 'p': 48,
+  'q': 39, 'r': 42, 's': 61, 't': 43, 'u': 45, 'v': 79, 'w': 40, 'x': 77,
+  'y': 44, 'z': 76,
+  // Numbers
+  '0': 27, '1': 18, '2': 19, '3': 20, '4': 21, '5': 22, '6': 23, '7': 24, '8': 25, '9': 26,
+  // Special characters
+  ' ': 95, // Space
+  '-': 28, // Minus
+  '(': 26, // Shift + 9
+  ')': 27, // Shift + 0
+  ',': 83, // Comma
+  '.': 84, // Period
+  '/': 85, // Slash
+  ';': 69, // Semicolon
+  "'": 70, // Quote
+  '!': 18, // Shift + 1
+  ':': 69, // Shift + semicolon
+};
+
 interface FullKeyboardProps {
   isComplete?: boolean;
+  displayText?: string;
 }
 
-export default function FullKeyboard({ isComplete = false }: FullKeyboardProps) {
+export default function FullKeyboard({ isComplete = false, displayText = '' }: FullKeyboardProps) {
   const [pressedKey, setPressedKey] = useState<number | null>(null);
   const [animatedKeys, setAnimatedKeys] = useState<number[]>([]);
+  const prevTextLengthRef = useRef(0);
 
   // Keyboard event listener for real keypresses
   useEffect(() => {
@@ -76,34 +101,56 @@ export default function FullKeyboard({ isComplete = false }: FullKeyboardProps) 
     };
   }, [pressedKey]);
 
-  // Random key press animation - randomly press 1-3 keys at a time
+  // Key press animation based on displayText
   useEffect(() => {
     // Stop animations if complete
     if (isComplete) {
       setAnimatedKeys([]);
+      prevTextLengthRef.current = 0;
       return;
     }
 
-    const pressRandomKeys = () => {
-      // Randomly choose how many keys to press (1-3)
-      const numKeys = Math.floor(Math.random() * 3) + 1;
-      const keys: number[] = [];
+    const currentLength = displayText.length;
+    const prevLength = prevTextLengthRef.current;
 
-      // Generate random unique keys
-      while (keys.length < numKeys) {
-        const randomKey = Math.floor(Math.random() * 104) + 1;
-        if (!keys.includes(randomKey)) {
-          keys.push(randomKey);
+    // Determine if text is being added or removed
+    if (currentLength > prevLength) {
+      // Text is being typed forward - press the key for the new character
+      const newChar = displayText[currentLength - 1];
+      const lowerChar = newChar.toLowerCase();
+      const keyId = charToKeyMap[lowerChar];
+
+      if (keyId) {
+        const keysToPress: number[] = [keyId];
+
+        // If uppercase letter, also press shift
+        if (newChar !== lowerChar && /[A-Z]/.test(newChar)) {
+          keysToPress.push(75); // Left Shift
         }
+
+        setAnimatedKeys(keysToPress);
+
+        // Release keys after 150ms (matching typing speed) to prevent last key from staying pressed
+        const releaseTimeout = setTimeout(() => {
+          setAnimatedKeys([]);
+        }, 150);
+
+        return () => clearTimeout(releaseTimeout);
+      } else {
+        // Character not in map, clear any pressed keys
+        setAnimatedKeys([]);
       }
+    } else if (currentLength < prevLength) {
+      // Text is being erased - keep backspace pressed
+      setAnimatedKeys([30]); // Backspace key stays pressed while erasing
+    } else if (currentLength === 0 && prevLength > 0) {
+      // Text is empty, clear keys
+      setAnimatedKeys([]);
+    }
 
-      setAnimatedKeys(keys);
-    };
-
-    const interval = setInterval(pressRandomKeys, 500);
-
-    return () => clearInterval(interval);
-  }, [isComplete]);
+    // Update ref to current length
+    prevTextLengthRef.current = currentLength;
+  }, [displayText, isComplete]);
   return (
     <svg width="100%" height="100%" viewBox="0 0 625 162" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
       {/* Keyboard base */}

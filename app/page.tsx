@@ -28,10 +28,11 @@ function HomeContent() {
 
   // Parse messages from JSON or use defaults
   const messages = useMemo(() => {
-    if (messagesParam) {
+    if (messagesParam !== null) {
       try {
         const parsed = JSON.parse(decodeURIComponent(messagesParam));
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
+          // Allow empty arrays when explicitly provided
           return parsed;
         }
       } catch (e) {
@@ -123,6 +124,12 @@ function HomeContent() {
       return;
     }
 
+    // If messages array is empty, clear display text
+    if (messages.length === 0) {
+      setDisplayText('');
+      return;
+    }
+
     const currentMessage = messages[messageIndex];
 
     // Safety check
@@ -140,7 +147,7 @@ function HomeContent() {
         if (charIndex <= currentMessage.length) {
           setDisplayText(currentMessage.slice(0, charIndex));
           charIndex++;
-          timeoutId = setTimeout(typeWriter, 100); // 100ms per character
+          timeoutId = setTimeout(typeWriter, 150); // 150ms per character
         } else {
           // Wait 3 seconds before reversing
           timeoutId = setTimeout(() => {
@@ -154,7 +161,7 @@ function HomeContent() {
         if (charIndex >= 0) {
           setDisplayText(currentMessage.slice(0, charIndex));
           charIndex--;
-          timeoutId = setTimeout(typeWriter, 50); // Faster when erasing
+          timeoutId = setTimeout(typeWriter, 75); // 75ms when erasing
         } else {
           // Move to next message
           setMessageIndex((prev) => (prev + 1) % messages.length);
@@ -191,8 +198,20 @@ function HomeContent() {
       {/* Customize button */}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="fixed top-4 right-4 z-30 px-4 py-2 border-2 border-current hover:bg-current hover:text-[#0c1a0e] transition-all"
-        style={{ fontFamily: 'inherit' }}
+        className="fixed top-4 right-4 z-30 px-4 py-2 border-2 border-current transition-all"
+        style={{
+          fontFamily: 'inherit',
+          backgroundColor: 'transparent',
+          color: '#00dd00'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#00dd00';
+          e.currentTarget.style.color = '#000000';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'transparent';
+          e.currentTarget.style.color = '#00dd00';
+        }}
       >
         Customize
       </button>
@@ -304,7 +323,7 @@ function HomeContent() {
 
           {/* Interactive keyboard */}
           <div className="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
-            <FullKeyboard isComplete={isComplete} />
+            <FullKeyboard isComplete={isComplete} displayText={displayText} />
           </div>
 
           <div className="mt-6 sm:mt-8 text-center h-[3.5rem] sm:h-[4rem] md:h-[4.5rem] px-2 flex items-center justify-center overflow-hidden">
