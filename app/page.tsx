@@ -191,8 +191,20 @@ function HomeContent() {
       {/* Customize button */}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="fixed top-4 right-4 z-30 px-4 py-2 border-2 border-current hover:bg-current hover:text-[#0c1a0e] transition-all"
-        style={{ fontFamily: 'inherit' }}
+        className="fixed top-4 right-4 z-30 px-4 py-2 border-2 border-current transition-all"
+        style={{
+          fontFamily: 'inherit',
+          backgroundColor: 'transparent',
+          color: '#00dd00'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#00dd00';
+          e.currentTarget.style.color = '#000000';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'transparent';
+          e.currentTarget.style.color = '#00dd00';
+        }}
       >
         Customize
       </button>
@@ -304,7 +316,7 @@ function HomeContent() {
 
           {/* Interactive keyboard */}
           <div className="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
-            <FullKeyboard isComplete={isComplete} />
+            <FullKeyboard isComplete={isComplete} displayText={displayText} />
           </div>
 
           <div className="mt-6 sm:mt-8 text-center h-[3.5rem] sm:h-[4rem] md:h-[4.5rem] px-2 flex items-center justify-center overflow-hidden">
