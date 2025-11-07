@@ -128,6 +128,13 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
         }
 
         setAnimatedKeys(keysToPress);
+
+        // Release keys after 300ms (matching typing speed) to prevent last key from staying pressed
+        const releaseTimeout = setTimeout(() => {
+          setAnimatedKeys([]);
+        }, 300);
+
+        return () => clearTimeout(releaseTimeout);
       } else {
         // Character not in map, clear any pressed keys
         setAnimatedKeys([]);
@@ -135,6 +142,13 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
     } else if (currentLength < prevTextLength) {
       // Text is being erased - press backspace
       setAnimatedKeys([30]); // Backspace key
+
+      // Release backspace after 150ms (matching erase speed)
+      const releaseTimeout = setTimeout(() => {
+        setAnimatedKeys([]);
+      }, 150);
+
+      return () => clearTimeout(releaseTimeout);
     } else if (currentLength === 0) {
       // Text is empty, clear keys
       setAnimatedKeys([]);
