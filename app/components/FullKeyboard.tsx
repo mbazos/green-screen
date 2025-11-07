@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 // Map keyboard event codes to key IDs
 const keyMap: { [key: string]: number } = {
@@ -74,7 +74,7 @@ interface FullKeyboardProps {
 export default function FullKeyboard({ isComplete = false, displayText = '' }: FullKeyboardProps) {
   const [pressedKey, setPressedKey] = useState<number | null>(null);
   const [animatedKeys, setAnimatedKeys] = useState<number[]>([]);
-  const [prevTextLength, setPrevTextLength] = useState(0);
+  const prevTextLengthRef = useRef(0);
 
   // Keyboard event listener for real keypresses
   useEffect(() => {
@@ -106,14 +106,15 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
     // Stop animations if complete
     if (isComplete) {
       setAnimatedKeys([]);
-      setPrevTextLength(0);
+      prevTextLengthRef.current = 0;
       return;
     }
 
     const currentLength = displayText.length;
+    const prevLength = prevTextLengthRef.current;
 
     // Determine if text is being added or removed
-    if (currentLength > prevTextLength) {
+    if (currentLength > prevLength) {
       // Text is being typed forward - press the key for the new character
       const newChar = displayText[currentLength - 1];
       const lowerChar = newChar.toLowerCase();
@@ -139,16 +140,17 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
         // Character not in map, clear any pressed keys
         setAnimatedKeys([]);
       }
-    } else if (currentLength < prevTextLength) {
+    } else if (currentLength < prevLength) {
       // Text is being erased - keep backspace pressed
       setAnimatedKeys([30]); // Backspace key stays pressed while erasing
-    } else if (currentLength === 0) {
+    } else if (currentLength === 0 && prevLength > 0) {
       // Text is empty, clear keys
       setAnimatedKeys([]);
     }
 
-    setPrevTextLength(currentLength);
-  }, [displayText, isComplete, prevTextLength]);
+    // Update ref to current length
+    prevTextLengthRef.current = currentLength;
+  }, [displayText, isComplete]);
   return (
     <svg width="100%" height="100%" viewBox="0 0 625 162" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
       {/* Keyboard base */}
