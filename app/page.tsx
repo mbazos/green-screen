@@ -262,7 +262,7 @@ function HomeContent() {
               years
             </span>
           </div>
-          <div className="flex items-center" style={{ height: '2.5rem' }}>
+          <div className="flex flex-col items-center justify-start">
             <span className="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
           </div>
           <div className="flex flex-col items-center">
@@ -273,7 +273,7 @@ function HomeContent() {
               days
             </span>
           </div>
-          <div className="flex items-center" style={{ height: '2.5rem' }}>
+          <div className="flex flex-col items-center justify-start">
             <span className="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
           </div>
           <div className="flex flex-col items-center">
@@ -284,7 +284,7 @@ function HomeContent() {
               hours
             </span>
           </div>
-          <div className="flex items-center" style={{ height: '2.5rem' }}>
+          <div className="flex flex-col items-center justify-start">
             <span className="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
           </div>
           <div className="flex flex-col items-center">
@@ -295,7 +295,7 @@ function HomeContent() {
               minutes
             </span>
           </div>
-          <div className="flex items-center" style={{ height: '2.5rem' }}>
+          <div className="flex flex-col items-center justify-start">
             <span className="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
           </div>
           <div className="flex flex-col items-center">

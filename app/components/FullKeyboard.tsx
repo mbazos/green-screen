@@ -141,8 +141,15 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
         setAnimatedKeys([]);
       }
     } else if (currentLength < prevLength) {
-      // Text is being erased - keep backspace pressed
-      setAnimatedKeys([30]); // Backspace key stays pressed while erasing
+      // Text is being erased - press backspace and release after delay
+      setAnimatedKeys([30]); // Backspace key ID
+
+      // Release backspace after 75ms (matching erasing speed) to create tapping effect
+      const releaseTimeout = setTimeout(() => {
+        setAnimatedKeys([]);
+      }, 75);
+
+      return () => clearTimeout(releaseTimeout);
     } else if (currentLength === 0 && prevLength > 0) {
       // Text is empty, clear keys
       setAnimatedKeys([]);
