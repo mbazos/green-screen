@@ -144,10 +144,10 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
       // Text is being erased - press backspace and release after delay
       setAnimatedKeys([30]); // Backspace key ID
 
-      // Release backspace after 75ms (matching erasing speed) to create tapping effect
+      // Release backspace after 50ms to create visible tapping effect before next deletion at 75ms
       const releaseTimeout = setTimeout(() => {
         setAnimatedKeys([]);
-      }, 75);
+      }, 50);
 
       return () => clearTimeout(releaseTimeout);
     } else if (currentLength === 0 && prevLength > 0) {
