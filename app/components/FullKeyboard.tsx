@@ -120,6 +120,9 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
       comparison: currentLength > prevLength ? 'TYPING' : currentLength < prevLength ? 'ERASING' : 'SAME'
     });
 
+    // Update ref FIRST before any early returns
+    prevTextLengthRef.current = currentLength;
+
     // Determine if text is being added or removed
     if (currentLength > prevLength) {
       console.log('→ TYPING branch: character key for', displayText[currentLength - 1]);
@@ -149,9 +152,9 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
         setAnimatedKeys([]);
       }
     } else if (currentLength < prevLength) {
-      // Text is being erased - press backspace key for duration of erase
+      // Text is being erased - press backspace key (BKSP)
       console.log('→ ERASING branch: Setting backspace key (30)');
-      setAnimatedKeys([30]); // Backspace key ID
+      setAnimatedKeys([30]); // Backspace key ID (BKSP)
 
       // Release backspace after 65ms (just before next deletion at 75ms) for visible tap
       const releaseTimeout = setTimeout(() => {
@@ -168,10 +171,6 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
       // Same length - do nothing
       console.log('→ SAME branch: no change');
     }
-
-    // Update ref to current length
-    console.log('  Updating prevTextLengthRef from', prevLength, 'to', currentLength);
-    prevTextLengthRef.current = currentLength;
   }, [displayText, isComplete]);
   return (
     <svg width="100%" height="100%" viewBox="0 0 625 162" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
