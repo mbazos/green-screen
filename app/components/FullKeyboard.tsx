@@ -128,14 +128,16 @@ export default function FullKeyboard({ isComplete = false, displayText = '' }: F
         }
 
         setAnimatedKeys(keysToPress);
-
-        // Release keys after a short delay
-        setTimeout(() => setAnimatedKeys([]), 100);
+      } else {
+        // Character not in map, clear any pressed keys
+        setAnimatedKeys([]);
       }
     } else if (currentLength < prevTextLength) {
       // Text is being erased - press backspace
       setAnimatedKeys([30]); // Backspace key
-      setTimeout(() => setAnimatedKeys([]), 100);
+    } else if (currentLength === 0) {
+      // Text is empty, clear keys
+      setAnimatedKeys([]);
     }
 
     setPrevTextLength(currentLength);
