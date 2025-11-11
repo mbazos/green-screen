@@ -9,14 +9,14 @@ function HomeContent() {
 
   // Default values
   const defaultMessages = [
-    'Application Developer Single Sign On (SSO) - 2 years',
-    'Senior Application Developer EAS - 3 years and 1 month',
-    'Senior Application Developer SE&I - 2 years and 2 months',
-    'Senior Software Engineer Rental Car Services - 2 years and 11 months',
-    'Principal Engineer Rental Car Services - 2 years',
-    'Distinguished Engineer Rental Car Services - 6 years',
-    'Senior Director Rental Car Services - 1 year and 7 months',
-    'Mobility Search & Book Development Manager - Present',
+    'Application Developer Single Sign On (SSO) - 2006',
+    'Senior Application Developer EAS - 2008',
+    'Senior Application Developer SE&I - 2011',
+    'Senior Software Engineer Rental Car Services - 2013',
+    'Principal Engineer Rental Car Services - 2016',
+    'Distinguished Engineer Rental Car Services - 2018',
+    'Senior Director Rental Car Services - 2024',
+    'Mobility Search & Book Development Manager - 2025',
   ];
 
   // Parse query parameters
