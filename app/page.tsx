@@ -329,6 +329,7 @@ function HomeContent() {
           <div className="mt-6 sm:mt-8 text-center h-[3.5rem] sm:h-[4rem] md:h-[4.5rem] px-2 flex items-center justify-center overflow-hidden">
             <p className="text-base sm:text-lg md:text-xl leading-relaxed">
               {displayText}
+              <span className="typing-cursor"></span>
             </p>
           </div>
         </div>
