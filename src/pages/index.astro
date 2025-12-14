@@ -1,0 +1,256 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Keyboard from '../components/Keyboard.astro';
+
+// Default values
+const defaultMessages = [
+  'Application Developer Single Sign On (SSO) - 2006',
+  'Senior Application Developer EAS - 2008',
+  'Senior Application Developer SE&I - 2011',
+  'Senior Software Engineer Rental Car Services - 2013',
+  'Principal Engineer Rental Car Services - 2016',
+  'Distinguished Engineer Rental Car Services - 2018',
+  'Senior Director Rental Car Services - 2024',
+  'Mobility Search & Book Development Manager - 2025',
+];
+
+// Parse URL parameters
+const url = Astro.url;
+const startDate = url.searchParams.get('startDate') || '2006-06-01T12:00:00';
+const endDate = url.searchParams.get('endDate') || '2046-06-01T12:00:00';
+const footerText = url.searchParams.get('footerText') || 'Michael Bazos';
+const footerUrl = url.searchParams.get('footerUrl') || 'https://michaelbazos.com/';
+
+// Parse messages from JSON or use defaults
+let messages = defaultMessages;
+const messagesParam = url.searchParams.get('messages');
+if (messagesParam !== null) {
+  try {
+    const parsed = JSON.parse(decodeURIComponent(messagesParam));
+    if (Array.isArray(parsed)) {
+      messages = parsed;
+    }
+  } catch (e) {
+    console.error('Failed to parse messages parameter:', e);
+  }
+}
+---
+
+<Layout title="A Countdown Clock to retirement">
+  <div
+    id="app-container"
+    class="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+    data-start-date={startDate}
+    data-end-date={endDate}
+    data-messages={JSON.stringify(messages)}
+    data-footer-text={footerText}
+    data-footer-url={footerUrl}
+  >
+    <!-- Fireworks container (populated by JS when complete) -->
+    <div id="fireworks-container" class="fixed inset-0 pointer-events-none z-10 hidden"></div>
+
+    <!-- Customize button -->
+    <button
+      id="customize-btn"
+      class="customize-btn fixed top-4 right-4 z-30 px-4 py-2 border-2 border-current transition-all"
+    >
+      Customize
+    </button>
+
+    <!-- Scanlines effect -->
+    <div class="scanlines"></div>
+    <div class="single-scanline"></div>
+
+    <main class="flex flex-col items-center justify-center gap-6 md:gap-8 z-20 px-4">
+      <header class="text-center w-full">
+        <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold mb-2">
+          Retirement Countdown
+        </h1>
+      </header>
+
+      <div class="flex gap-2 sm:gap-4 md:gap-8 text-center items-start">
+        <div class="flex flex-col items-center">
+          <span id="years" class="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">0</span>
+          <span class="text-xs sm:text-sm md:text-base mt-1 md:mt-2">years</span>
+        </div>
+        <div class="flex flex-col items-center justify-start">
+          <span class="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <span id="days" class="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">0</span>
+          <span class="text-xs sm:text-sm md:text-base mt-1 md:mt-2">days</span>
+        </div>
+        <div class="flex flex-col items-center justify-start">
+          <span class="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <span id="hours" class="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">00</span>
+          <span class="text-xs sm:text-sm md:text-base mt-1 md:mt-2">hours</span>
+        </div>
+        <div class="flex flex-col items-center justify-start">
+          <span class="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <span id="minutes" class="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">00</span>
+          <span class="text-xs sm:text-sm md:text-base mt-1 md:mt-2">minutes</span>
+        </div>
+        <div class="flex flex-col items-center justify-start">
+          <span class="text-4xl sm:text-5xl md:text-7xl font-bold colon-pulse">:</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <span id="seconds" class="text-4xl sm:text-5xl md:text-7xl font-bold tabular-nums">00</span>
+          <span class="text-xs sm:text-sm md:text-base mt-1 md:mt-2">seconds</span>
+        </div>
+      </div>
+
+      <div class="w-full max-w-2xl px-2">
+        <div class="relative w-full h-10 sm:h-12 border-2 border-current">
+          <div
+            id="progress-bar"
+            class="absolute top-0 left-0 h-full bg-current opacity-20 transition-all duration-1000"
+            style="width: 0%"
+          ></div>
+          <div class="absolute inset-0 flex items-center px-2 sm:px-4">
+            <span id="progress-text" class="text-base sm:text-xl md:text-2xl font-semibold">
+              0.0% complete
+            </span>
+          </div>
+        </div>
+
+        <!-- Interactive keyboard -->
+        <div class="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
+          <Keyboard />
+        </div>
+
+        <div class="mt-6 sm:mt-8 text-center h-[3.5rem] sm:h-[4rem] md:h-[4.5rem] px-2 flex items-center justify-center overflow-hidden">
+          <p class="text-base sm:text-lg md:text-xl leading-relaxed">
+            <span id="display-text"></span>
+            <span class="typing-cursor"></span>
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="fixed bottom-2 sm:bottom-4 left-0 right-0 text-center z-20 px-4">
+      <a
+        id="footer-link"
+        href={footerUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-base sm:text-lg md:text-xl hover:opacity-70 transition-opacity"
+      >
+        {footerText}
+      </a>
+    </footer>
+
+    <!-- Customization Modal -->
+    <div
+      id="modal-backdrop"
+      class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 hidden"
+    >
+      <div
+        id="modal-content"
+        class="modal-content border-2 border-current p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">Customize Countdown</h2>
+          <button id="modal-close" class="text-2xl hover:opacity-70">×</button>
+        </div>
+
+        <form id="customize-form" class="space-y-4">
+          <div>
+            <label class="block mb-2 text-sm font-semibold">Start Date (Month & Year)</label>
+            <input
+              type="month"
+              id="form-start-date"
+              class="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block mb-2 text-sm font-semibold">End Date (Month & Year)</label>
+            <input
+              type="month"
+              id="form-end-date"
+              class="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block mb-2 text-sm font-semibold">Messages (one per line)</label>
+            <textarea
+              id="form-messages"
+              rows="8"
+              class="w-full p-2 border-2 border-current bg-transparent focus:outline-none resize-y"
+              placeholder="Enter messages, one per line"
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block mb-2 text-sm font-semibold">Footer Text</label>
+            <input
+              type="text"
+              id="form-footer-text"
+              class="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block mb-2 text-sm font-semibold">Footer URL</label>
+            <input
+              type="url"
+              id="form-footer-url"
+              class="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
+              placeholder="https://example.com"
+            />
+          </div>
+
+          <div class="flex gap-4 pt-4">
+            <button
+              type="submit"
+              class="submit-btn flex-1 px-4 py-3 border-2 border-current transition-all font-semibold"
+            >
+              Apply Changes
+            </button>
+            <button
+              type="button"
+              id="modal-cancel"
+              class="cancel-btn px-4 py-3 border-2 border-current transition-all"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { initCountdown } from '../scripts/countdown';
+    import { initTypewriter } from '../scripts/typewriter';
+    import { initKeyboard } from '../scripts/keyboard';
+    import { initModal } from '../scripts/modal';
+
+    // Initialize all modules
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('app-container')!;
+      const startDate = container.dataset.startDate!;
+      const endDate = container.dataset.endDate!;
+      const messages = JSON.parse(container.dataset.messages!);
+      const footerText = container.dataset.footerText!;
+      const footerUrl = container.dataset.footerUrl!;
+
+      // Initialize countdown
+      initCountdown(startDate, endDate);
+
+      // Initialize typewriter
+      initTypewriter(messages);
+
+      // Initialize keyboard
+      initKeyboard();
+
+      // Initialize modal
+      initModal(startDate, endDate, messages, footerText, footerUrl);
+    });
+  </script>
+</Layout>

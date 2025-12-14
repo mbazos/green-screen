@@ -1,28 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0c1a0e;
+  --foreground: #00dd00;
+  --font-mono: ui-monospace, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Mono", "Source Code Pro", "Fira Mono", "Droid Sans Mono", Consolas, "Courier New", monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-mono: var(--font-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Scanlines effect */
@@ -31,29 +25,11 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.3) 0px,
-    rgba(0, 0, 0, 0.3) 1px,
-    transparent 1px,
-    transparent 3px
-  );
+  height: 200vh;
+  background-image: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, rgba(0, 0, 0, 0.3) 2px, transparent 2px, transparent 4px);
   pointer-events: none;
   z-index: 9999;
-  animation: scanlines 10s linear infinite;
-}
-
-@media (prefers-color-scheme: dark) {
-  .scanlines {
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.08) 0px,
-      rgba(255, 255, 255, 0.08) 2px,
-      transparent 2px,
-      transparent 3px
-    );
-  }
+  animation: scanlines 0.5s linear infinite;
 }
 
 @keyframes scanlines {
@@ -63,6 +39,17 @@ body {
   100% {
     transform: translateY(4px);
   }
+}
+
+.single-scanline {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 10000;
+  animation: single-scanline 1s linear infinite;
 }
 
 @keyframes single-scanline {
@@ -169,4 +156,38 @@ body {
   margin-left: 0.1em;
   animation: cursor-blink 1s infinite;
   vertical-align: text-bottom;
+}
+
+/* Button hover styles */
+.customize-btn {
+  background-color: transparent;
+  color: #00dd00;
+  transition: all 0.2s ease;
+}
+
+.customize-btn:hover {
+  background-color: #00dd00;
+  color: #000000;
+}
+
+/* Modal styles */
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.modal-content {
+  background-color: #0c1a0e;
+}
+
+/* Form input styles */
+input, textarea {
+  caret-color: #00dd00;
+  color-scheme: dark;
+}
+
+/* Submit button hover */
+.submit-btn:hover,
+.cancel-btn:hover {
+  background-color: #00dd00;
+  color: #0c1a0e;
 }
