@@ -1,4 +1,6 @@
 // Keyboard visualization module
+import { playKeySound, playKeyReleaseSound } from './audio';
+import { switchToUserInput, handleUserKeyPress, isInUserInputMode } from './typewriter';
 
 // Map keyboard event codes to key IDs
 const keyMap: Record<string, number> = {
@@ -65,7 +67,7 @@ const charToKeyMap: Record<string, number> = {
   '&': 24, // Shift + 7
 };
 
-let pressedKeyId: number | null = null;
+const pressedKeys = new Set<number>();
 
 function getKeyElement(keyId: number): Element | null {
   return document.querySelector(`[data-key="${keyId}"]`);
@@ -94,10 +96,12 @@ function releaseAllKeys() {
 function animateKeyPress(keyIds: number[], duration: number) {
   // Press keys
   keyIds.forEach(id => pressKey(id));
+  playKeySound();
 
   // Release after duration
   setTimeout(() => {
     keyIds.forEach(id => releaseKey(id));
+    playKeyReleaseSound();
   }, duration);
 }
 
@@ -124,25 +128,54 @@ function handleTypewriterChar(event: CustomEvent<{ char: string; isDeleting: boo
   }
 }
 
+// Keys that should not trigger user input mode
+const nonTypingKeys = new Set([
+  'Escape', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
+  'PrintScreen', 'ScrollLock', 'Pause', 'Insert', 'Home', 'End', 'PageUp', 'PageDown',
+  'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'NumLock', 'CapsLock',
+  'ShiftLeft', 'ShiftRight', 'ControlLeft', 'ControlRight',
+  'AltLeft', 'AltRight', 'MetaLeft', 'MetaRight', 'ContextMenu', 'Tab'
+]);
+
 function handleKeyDown(e: KeyboardEvent) {
   const keyId = keyMap[e.code];
-  if (keyId) {
-    pressedKeyId = keyId;
+  if (keyId && !pressedKeys.has(keyId)) {
+    pressedKeys.add(keyId);
     pressKey(keyId);
+    playKeySound();
+
+    // Check if this is a typing key (not a modifier or function key)
+    if (!nonTypingKeys.has(e.code)) {
+      // Switch to user input mode on first keypress
+      if (!isInUserInputMode()) {
+        switchToUserInput();
+      }
+
+      // Handle the key press for user input
+      if (e.key === 'Backspace') {
+        handleUserKeyPress('Backspace');
+      } else if (e.key === 'Enter') {
+        handleUserKeyPress('Enter');
+      } else if (e.key.length === 1) {
+        handleUserKeyPress(e.key);
+      }
+    }
   }
 }
 
 function handleKeyUp(e: KeyboardEvent) {
   const keyId = keyMap[e.code];
-  if (keyId && pressedKeyId === keyId) {
+  if (keyId && pressedKeys.has(keyId)) {
     releaseKey(keyId);
-    pressedKeyId = null;
+    pressedKeys.delete(keyId);
+    playKeyReleaseSound();
   }
 }
 
 function handleComplete() {
   // Stop animations when countdown is complete
   releaseAllKeys();
+  pressedKeys.clear();
 }
 
 export function initKeyboard() {

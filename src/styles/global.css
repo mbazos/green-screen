@@ -170,6 +170,48 @@ body {
   color: #000000;
 }
 
+/* Music button styles */
+.music-btn {
+  background-color: transparent;
+  color: #00dd00;
+  transition: all 0.2s ease;
+}
+
+.music-btn:hover {
+  background-color: #00dd00;
+  color: #000000;
+}
+
+.music-btn.music-playing {
+  background-color: rgba(0, 221, 0, 0.2);
+  animation: music-pulse 1s ease-in-out infinite;
+}
+
+@keyframes music-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(0, 221, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(0, 221, 0, 0.8), 0 0 25px rgba(0, 221, 0, 0.4);
+  }
+}
+
+/* Sound effects button styles */
+.sfx-btn {
+  background-color: transparent;
+  color: #00dd00;
+  transition: all 0.2s ease;
+}
+
+.sfx-btn:hover {
+  background-color: #00dd00;
+  color: #000000;
+}
+
+.sfx-btn.sfx-enabled {
+  background-color: rgba(0, 221, 0, 0.2);
+}
+
 /* Modal styles */
 .modal-backdrop {
   background-color: rgba(0, 0, 0, 0.85);

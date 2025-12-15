@@ -5,6 +5,8 @@ let messageIndex = 0;
 let charIndex = 0;
 let isTyping = true;
 let isComplete = false;
+let isUserInputMode = false;
+let userInputText = '';
 let timeoutId: number | null = null;
 let displayTextEl: HTMLElement | null = null;
 
@@ -102,4 +104,35 @@ export function stopTypewriter() {
     clearTimeout(timeoutId);
     timeoutId = null;
   }
+}
+
+export function switchToUserInput() {
+  if (isUserInputMode || isComplete) return;
+
+  // Stop the automated typewriter
+  stopTypewriter();
+
+  // Clear display and switch to user input mode
+  isUserInputMode = true;
+  userInputText = '';
+  updateDisplay('');
+}
+
+export function handleUserKeyPress(key: string) {
+  if (!isUserInputMode || isComplete) return;
+
+  if (key === 'Backspace') {
+    userInputText = userInputText.slice(0, -1);
+  } else if (key === 'Enter') {
+    userInputText += '\n';
+  } else if (key.length === 1) {
+    // Single character (letter, number, symbol)
+    userInputText += key;
+  }
+
+  updateDisplay(userInputText);
+}
+
+export function isInUserInputMode(): boolean {
+  return isUserInputMode;
 }
