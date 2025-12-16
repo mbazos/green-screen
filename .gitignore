@@ -42,3 +42,4 @@ yarn-error.log*
 .idea
 .claude
 .astro
+.netlify
