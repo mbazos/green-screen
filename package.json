@@ -10,7 +10,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@astrojs/netlify": "^6.6.3",
     "astro": "^5.0.0"
   },
   "devDependencies": {
