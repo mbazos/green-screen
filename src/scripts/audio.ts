@@ -45,6 +45,42 @@ const melody = [
   { note: 'G4', duration: 1.5 },
   { note: 'E4', duration: 2.0 },
   { note: 'rest', duration: 1.5 },
+  // Phrase 5 - ethereal ascent
+  { note: 'C5', duration: 1.0 },
+  { note: 'B4', duration: 0.75 },
+  { note: 'A4', duration: 1.25 },
+  { note: 'rest', duration: 0.5 },
+  { note: 'G4', duration: 1.0 },
+  { note: 'A4', duration: 0.75 },
+  { note: 'B4', duration: 1.5 },
+  { note: 'rest', duration: 0.75 },
+  // Phrase 6 - soaring
+  { note: 'D5', duration: 1.5 },
+  { note: 'C5', duration: 1.0 },
+  { note: 'B4', duration: 1.25 },
+  { note: 'rest', duration: 0.5 },
+  { note: 'A4', duration: 1.0 },
+  { note: 'G4', duration: 0.75 },
+  { note: 'E4', duration: 1.5 },
+  { note: 'rest', duration: 0.75 },
+  // Phrase 7 - reflective
+  { note: 'A4', duration: 1.0 },
+  { note: 'B4', duration: 1.25 },
+  { note: 'C5', duration: 1.5 },
+  { note: 'rest', duration: 0.5 },
+  { note: 'B4', duration: 1.0 },
+  { note: 'A4', duration: 0.75 },
+  { note: 'G4', duration: 2.0 },
+  { note: 'rest', duration: 1.0 },
+  // Phrase 8 - peaceful return
+  { note: 'E4', duration: 1.0 },
+  { note: 'G4', duration: 1.25 },
+  { note: 'A4', duration: 1.5 },
+  { note: 'G4', duration: 1.0 },
+  { note: 'rest', duration: 0.5 },
+  { note: 'E4', duration: 1.5 },
+  { note: 'D4', duration: 2.0 },
+  { note: 'rest', duration: 1.5 },
 ];
 
 // Slow bass line
@@ -56,6 +92,14 @@ const bassLine = [
   { note: 'C3', duration: 2.0 },
   { note: 'G2', duration: 2.0 },
   { note: 'A2', duration: 2.0 },
+  { note: 'E2', duration: 2.0 },
+  { note: 'C3', duration: 2.0 },
+  { note: 'D2', duration: 2.0 },
+  { note: 'G2', duration: 2.0 },
+  { note: 'A2', duration: 2.0 },
+  { note: 'E2', duration: 2.0 },
+  { note: 'G2', duration: 2.0 },
+  { note: 'D2', duration: 2.0 },
   { note: 'E2', duration: 2.0 },
 ];
 
@@ -140,6 +184,10 @@ const padChords = [
   ['A3', 'C4', 'E4'],
   ['D3', 'F3', 'A3'],
   ['G3', 'B3', 'D4'],
+  ['C4', 'E4', 'G4'],
+  ['D3', 'G3', 'B3'],
+  ['A3', 'C4', 'E4'],
+  ['E3', 'G3', 'B3'],
 ];
 let padIndex = 0;
 

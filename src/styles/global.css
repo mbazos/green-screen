@@ -75,7 +75,7 @@ body {
 }
 
 /* Keyboard typing animation */
-.keyboard-typing-container {
+.keyboard-typing-container:not(.hidden) {
   display: inline-block;
 }
 

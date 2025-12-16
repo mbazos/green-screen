@@ -18,7 +18,13 @@ const defaultMessages = [
 const url = Astro.url;
 const startDate = url.searchParams.get('startDate') || '2006-06-01T12:00:00';
 const endDate = url.searchParams.get('endDate') || '2046-06-01T12:00:00';
-const footerText = url.searchParams.get('footerText') || 'Michael Bazos';
+const titleParam = url.searchParams.get('title');
+const title = titleParam !== null && titleParam.trim() !== '' ? titleParam : 'Retirement Countdown';
+const showTitle = titleParam === null || titleParam.trim() !== ''; // Hide only if explicitly set to empty
+const showKeyboard = url.searchParams.get('showKeyboard') !== 'false'; // Default to true
+const footerTextParam = url.searchParams.get('footerText');
+const footerText = footerTextParam !== null && footerTextParam.trim() !== '' ? footerTextParam : 'Michael Bazos';
+const showFooter = footerTextParam === null || footerTextParam.trim() !== ''; // Hide only if explicitly set to empty
 const footerUrl = url.searchParams.get('footerUrl') || 'https://michaelbazos.com/';
 
 // Parse messages from JSON or use defaults
@@ -34,14 +40,17 @@ if (messagesParam !== null) {
     console.error('Failed to parse messages parameter:', e);
   }
 }
+const showMessages = messages.length > 0;
 ---
 
-<Layout title="A Countdown Clock to retirement">
+<Layout title="A Countdown Clock">
   <div
     id="app-container"
     class="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
     data-start-date={startDate}
     data-end-date={endDate}
+    data-title={title}
+    data-show-keyboard={showKeyboard}
     data-messages={JSON.stringify(messages)}
     data-footer-text={footerText}
     data-footer-url={footerUrl}
@@ -93,9 +102,9 @@ if (messagesParam !== null) {
     <div class="single-scanline"></div>
 
     <main class="flex flex-col items-center justify-center gap-6 md:gap-8 z-20 px-4">
-      <header class="text-center w-full">
-        <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold mb-2">
-          Retirement Countdown
+      <header class={`text-center w-full ${showTitle ? '' : 'hidden'}`}>
+        <h1 id="countdown-title" class="text-3xl sm:text-4xl md:text-6xl font-bold mb-2">
+          {title}
         </h1>
       </header>
 
@@ -149,17 +158,17 @@ if (messagesParam !== null) {
         </div>
 
         <!-- Interactive keyboard -->
-        <div class="keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto">
+        <div class={`keyboard-typing-container mt-6 md:mt-8 w-full max-w-4xl mx-auto ${showKeyboard ? '' : 'hidden'}`}>
           <Keyboard />
         </div>
 
-        <div class="mt-6 sm:mt-8 h-[3.5rem] sm:h-[4rem] md:h-[4.5rem] px-2 flex items-center justify-center overflow-hidden">
-          <p class="text-base sm:text-lg md:text-xl leading-relaxed text-left whitespace-pre-wrap"><span id="display-text"></span><span class="typing-cursor"></span></p>
+        <div class={`mt-6 sm:mt-8 h-[3.5rem] sm:h-[4rem] md:h-[4.5rem] px-2 flex items-center justify-center overflow-hidden ${showMessages ? '' : 'hidden'}`}>
+          <p class="text-base sm:text-lg md:text-xl leading-relaxed text-left whitespace-pre-wrap"><span id="display-text"></span><span class={`typing-cursor ${!showMessages ? 'hidden' : ''}`}></span></p>
         </div>
       </div>
     </main>
 
-    <footer class="fixed bottom-2 sm:bottom-4 left-0 right-0 text-center z-20 px-4">
+    <footer class={`fixed bottom-2 sm:bottom-4 left-0 right-0 text-center z-20 px-4 ${showFooter ? '' : 'hidden'}`}>
       <a
         id="footer-link"
         href={footerUrl}
@@ -186,6 +195,16 @@ if (messagesParam !== null) {
         </div>
 
         <form id="customize-form" class="space-y-4">
+          <div>
+            <label class="block mb-2 text-sm font-semibold">Title</label>
+            <input
+              type="text"
+              id="form-title"
+              class="w-full p-2 border-2 border-current bg-transparent focus:outline-none"
+              placeholder="Retirement Countdown"
+            />
+          </div>
+
           <div>
             <label class="block mb-2 text-sm font-semibold">Start Date (Month & Year)</label>
             <input
@@ -233,6 +252,15 @@ if (messagesParam !== null) {
             />
           </div>
 
+          <div class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="form-show-keyboard"
+              class="w-4 h-4 border-2 border-current bg-transparent focus:outline-none"
+            />
+            <label for="form-show-keyboard" class="text-sm font-semibold cursor-pointer">Show Keyboard</label>
+          </div>
+
           <div class="flex gap-4 pt-4">
             <button
               type="submit"
@@ -265,6 +293,8 @@ if (messagesParam !== null) {
       const container = document.getElementById('app-container')!;
       const startDate = container.dataset.startDate!;
       const endDate = container.dataset.endDate!;
+      const title = container.dataset.title!;
+      const showKeyboard = container.dataset.showKeyboard === 'true';
       const messages = JSON.parse(container.dataset.messages!);
       const footerText = container.dataset.footerText!;
       const footerUrl = container.dataset.footerUrl!;
@@ -275,11 +305,13 @@ if (messagesParam !== null) {
       // Initialize typewriter
       initTypewriter(messages);
 
-      // Initialize keyboard
-      initKeyboard();
+      // Initialize keyboard only if it should be shown
+      if (showKeyboard) {
+        initKeyboard();
+      }
 
       // Initialize modal
-      initModal(startDate, endDate, messages, footerText, footerUrl);
+      initModal(startDate, endDate, title, showKeyboard, messages, footerText, footerUrl);
 
       // Initialize music toggle
       const musicBtn = document.getElementById('music-btn')!;
