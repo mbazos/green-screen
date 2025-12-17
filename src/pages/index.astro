@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Keyboard from '../components/Keyboard.astro';
 
-// Default values
+// Default values for initial server-side render
 const defaultMessages = [
   'Application Developer Single Sign On (SSO) - 2006',
   'Senior Application Developer EAS - 2008',
@@ -14,32 +14,17 @@ const defaultMessages = [
   'Mobility Search & Book Development Manager - 2025',
 ];
 
-// Parse URL parameters
-const url = Astro.url;
-const startDate = url.searchParams.get('startDate') || '2006-06-01T12:00:00';
-const endDate = url.searchParams.get('endDate') || '2046-06-01T12:00:00';
-const titleParam = url.searchParams.get('title');
-const title = titleParam !== null && titleParam.trim() !== '' ? titleParam : 'Retirement Countdown';
-const showTitle = titleParam === null || titleParam.trim() !== ''; // Hide only if explicitly set to empty
-const showKeyboard = url.searchParams.get('showKeyboard') !== 'false'; // Default to true
-const footerTextParam = url.searchParams.get('footerText');
-const footerText = footerTextParam !== null && footerTextParam.trim() !== '' ? footerTextParam : 'Michael Bazos';
-const showFooter = footerTextParam === null || footerTextParam.trim() !== ''; // Hide only if explicitly set to empty
-const footerUrl = url.searchParams.get('footerUrl') || 'https://michaelbazos.com/';
-
-// Parse messages from JSON or use defaults
-let messages = defaultMessages;
-const messagesParam = url.searchParams.get('messages');
-if (messagesParam !== null) {
-  try {
-    const parsed = JSON.parse(decodeURIComponent(messagesParam));
-    if (Array.isArray(parsed)) {
-      messages = parsed;
-    }
-  } catch (e) {
-    console.error('Failed to parse messages parameter:', e);
-  }
-}
+// Use default values for static build
+// Client-side script will parse URL params and update these
+const startDate = '2006-06-01T12:00:00';
+const endDate = '2046-06-01T12:00:00';
+const title = 'Retirement Countdown';
+const showTitle = true;
+const showKeyboard = true;
+const footerText = 'Michael Bazos';
+const showFooter = true;
+const footerUrl = 'https://michaelbazos.com/';
+const messages = defaultMessages;
 const showMessages = messages.length > 0;
 ---
 
@@ -287,9 +272,15 @@ const showMessages = messages.length > 0;
     import { initKeyboard } from '../scripts/keyboard';
     import { initModal } from '../scripts/modal';
     import { toggleMusic, isMusicEnabled, toggleSoundEffects, isSoundEffectsEnabled, startMusic } from '../scripts/audio';
+    import { parseQueryParams, applyParamsToPage } from '../scripts/params';
 
     // Initialize all modules
     document.addEventListener('DOMContentLoaded', () => {
+      // Parse query params and apply to page
+      const params = parseQueryParams();
+      applyParamsToPage(params);
+
+      // Now read the updated values from the container
       const container = document.getElementById('app-container')!;
       const startDate = container.dataset.startDate!;
       const endDate = container.dataset.endDate!;
